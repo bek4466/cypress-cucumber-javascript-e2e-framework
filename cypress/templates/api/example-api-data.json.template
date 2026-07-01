@@ -1,0 +1,21 @@
+{
+  "_notes": {
+    "purpose": "Copy into cypress/test-data/pages and register it in DataRepository when an API is approved for testing.",
+    "security": "Store only non-secret payload templates and expected values. Credentials and tokens belong in .env.",
+    "maintenance": "Use dot-delimited DataRepository keys from API step definitions instead of duplicating payloads."
+  },
+  "exampleApi": {
+    "paths": {
+      "resourceById": "/resources/1"
+    },
+    "expected": {
+      "successStatus": 200,
+      "maximumDurationMs": 2000
+    },
+    "payloads": {
+      "createResource": {
+        "name": "automation-resource"
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+// Notes:
+// Copy to cypress/e2e/step-definitions/<service-name>-api.steps.js.
+// Imports below assume that destination. Keep the latest response scoped to
+// the scenario and never attach authorization headers or secrets to reports.
+const {
+  When,
+  Then
+} = require('@badeball/cypress-cucumber-preprocessor');
+const { ApiClient } = require('../../support/api/api-client');
+const {
+  ApiResponseValidator
+} = require('../../support/api/api-response-validator');
+
+let latestResponse;
+
+/**
+ * Sends a GET request using apiBaseUrl from the active environment.
+ * @param {string} path Relative API resource path.
+ */
+When('I send a GET request to {string}', (path) => {
+  ApiClient.get(path).then((response) => {
+    latestResponse = response;
+  });
+});
+
+/**
+ * Verifies the status of the latest scenario response.
+ * @param {number} expectedStatus Expected HTTP status code.
+ */
+Then('the API response status should be {int}', (expectedStatus) => {
+  ApiResponseValidator.status(latestResponse, expectedStatus);
+});
+
+/**
+ * Verifies every table row names a property present in the response body.
+ * @param {import('@badeball/cypress-cucumber-preprocessor').DataTable} dataTable Required paths.
+ */
+Then('the API response should contain required properties:', (dataTable) => {
+  ApiResponseValidator.requiredBodyProperties(
+    latestResponse,
+    dataTable.raw().flat()
+  );
+});

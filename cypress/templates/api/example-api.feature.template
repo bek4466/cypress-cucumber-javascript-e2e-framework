@@ -1,0 +1,16 @@
+# Notes:
+# Copy to cypress/e2e/features/api/<service-name>.feature and remove .template.
+# Configure apiBaseUrl for the active environment before enabling this scenario.
+# Never place tokens, passwords, or customer data in a feature file.
+@api @api-smoke
+Feature: Example API resource contract
+  As an SDET
+  I want reusable API request and response validation
+  So that service contracts can be covered alongside browser scenarios
+
+  Scenario: Retrieve one resource
+    When I send a GET request to "/resources/1"
+    Then the API response status should be 200
+    And the API response should contain required properties:
+      | id   |
+      | name |

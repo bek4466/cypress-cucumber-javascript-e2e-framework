@@ -5,6 +5,7 @@ const { NavigationActions } = require('./actions/navigation-actions');
 const { KeyboardMouseActions } = require('./actions/keyboard-mouse-actions');
 const { TableActions } = require('./actions/table-actions');
 const { AssertionActions } = require('./actions/assertion-actions');
+const { WaitActions } = require('./actions/wait-actions');
 const { SessionManager } = require('./services/session-manager');
 
 /**
@@ -57,6 +58,15 @@ Cypress.Commands.add('uiTableRowContains', (ownerName, tableName, row, expected)
 );
 Cypress.Commands.add('uiShouldHaveText', (ownerName, elementName, expected) =>
   AssertionActions.shouldHaveText(owner(ownerName), elementName, expected)
+);
+Cypress.Commands.add('uiShouldBeChecked', (ownerName, elementName) =>
+  AssertionActions.shouldBeChecked(owner(ownerName), elementName)
+);
+Cypress.Commands.add('uiShouldHaveValue', (ownerName, elementName, expected) =>
+  AssertionActions.shouldHaveValue(owner(ownerName), elementName, expected)
+);
+Cypress.Commands.add('uiWaitUntilEnabled', (ownerName, elementName, timeout) =>
+  WaitActions.untilEnabled(owner(ownerName), elementName, timeout)
 );
 Cypress.Commands.add('refreshPage', (force = false, options = {}) =>
   NavigationActions.refresh(force, options)

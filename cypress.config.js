@@ -85,7 +85,8 @@ module.exports = defineConfig({
       config.expose = {
         ...(config.expose || {}),
         environment,
-        domains: environmentConfig.domains
+        domains: environmentConfig.domains,
+        apiBaseUrl: environmentConfig.apiBaseUrl || ''
       };
       config.projectId = process.env.CYPRESS_PROJECT_ID || config.projectId;
 
@@ -134,7 +135,9 @@ module.exports = defineConfig({
       });
 
       fixedOn('after:run', async () => {
-        await generateCucumberReport({ silentIfMissing: true });
+        if (process.env.SKIP_HTML_REPORT !== 'true') {
+          await generateCucumberReport({ silentIfMissing: true });
+        }
       });
 
       return config;

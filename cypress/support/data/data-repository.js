@@ -1,4 +1,5 @@
 const commonData = require('../../test-data/common.json');
+const theInternetData = require('../../test-data/pages/the-internet.json');
 const devData = require('../../test-data/environments/dev.json');
 const { deepMerge, getRequiredValue } = require('../utils/object-utils');
 
@@ -26,7 +27,7 @@ class DataRepository {
       );
     }
 
-    return deepMerge(commonData, override);
+    return deepMerge(deepMerge(commonData, theInternetData), override);
   }
 
   /**

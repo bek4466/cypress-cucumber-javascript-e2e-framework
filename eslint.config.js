@@ -19,6 +19,7 @@ module.exports = [
         ...globals.browser,
         cy: 'readonly',
         Cypress: 'readonly',
+        expect: 'readonly',
         describe: 'readonly',
         it: 'readonly',
         before: 'readonly',

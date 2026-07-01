@@ -13,6 +13,8 @@
     "test:all": "cypress run",
     "test:smoke": "cypress run --env tags=@smoke",
     "test:regression": "cypress run --env tags=@regression",
+    "test:the-internet": "cypress run --env tags=@the-internet",
+    "test:the-internet:headed": "cypress run --headed --env tags=@the-internet",
     "test:headed": "cypress run --headed",
     "test:chrome": "cypress run --browser chrome",
     "test:record": "cypress run --record",

@@ -1,0 +1,38 @@
+{
+  "_notes": {
+    "purpose": "Shared paths, inputs, and expected results for the public The Internet demo application.",
+    "credentials": "The included login is published by the demo page itself. Real credentials must be loaded from .env through SecretRepository.",
+    "maintenance": "Keep selectors in page objects. Update only values and expected text in this data file."
+  },
+  "theInternet": {
+    "paths": {
+      "home": "/",
+      "login": "/login",
+      "checkboxes": "/checkboxes",
+      "dropdown": "/dropdown",
+      "tables": "/tables",
+      "dynamicControls": "/dynamic_controls"
+    },
+    "login": {
+      "validUsername": "tomsmith",
+      "validPassword": "SuperSecretPassword!",
+      "invalidUsername": "invalid-user",
+      "invalidPassword": "invalid-password",
+      "successMessage": "You logged into a secure area!",
+      "invalidUsernameMessage": "Your username is invalid!",
+      "secureHeading": "Secure Area"
+    },
+    "controls": {
+      "dropdownOptionText": "Option 2",
+      "dropdownOptionValue": "2",
+      "dynamicInputText": "Cypress enterprise framework",
+      "enabledMessage": "It's enabled!"
+    },
+    "tables": {
+      "smithLastName": "Smith",
+      "smithEmail": "jsmith@gmail.com",
+      "smithBalance": "$50.00",
+      "expectedRowCount": 4
+    }
+  }
+}

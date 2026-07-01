@@ -13,6 +13,44 @@ A scalable end-to-end automation framework built with Cypress, Cucumber/Gherkin,
 
 Cypress is intentionally pinned to 15.17.0 because it is the newest version currently accepted by the Cucumber preprocessor 25.0.0 peer dependency. `package-lock.json` pins the complete dependency tree.
 
+## Run The Internet test suite
+
+The automated suite for [The Internet](https://the-internet.herokuapp.com/) is tagged `@the-internet` and covers valid/invalid authentication, checkboxes, dropdowns, sortable-table records, and asynchronous dynamic controls.
+
+After completing the Windows setup below, run all new scenarios headlessly:
+
+```powershell
+npm run test:the-internet
+```
+
+Run all new scenarios with a visible browser:
+
+```powershell
+npm run test:the-internet:headed
+```
+
+Develop or debug one feature in the Cypress GUI:
+
+```powershell
+npm run cy:open
+```
+
+Then select **E2E Testing**, choose a browser, and open a feature under `cypress/e2e/features/the-internet`.
+
+Run one feature directly when troubleshooting:
+
+```powershell
+npx cypress run --headed --browser chrome --spec "cypress/e2e/features/the-internet/authentication.feature"
+```
+
+The Internet implementation is organized here:
+
+- page objects and locators: `cypress/support/pages/the-internet-*.js`;
+- feature files: `cypress/e2e/features/the-internet`;
+- documented step definitions: `cypress/e2e/step-definitions/the-internet.steps.js`;
+- shared data and expected values: `cypress/test-data/pages/the-internet.json`;
+- reusable waits, actions, assertions, and utilities: `cypress/support/actions` and `cypress/support/utils`.
+
 ## Windows setup
 
 1. Install [Node.js 24 LTS](https://nodejs.org/) or use an equivalent Windows Node version manager.
@@ -57,6 +95,8 @@ Cypress is intentionally pinned to 15.17.0 because it is the newest version curr
 | `npm test` | Run scenarios tagged `@smoke`. |
 | `npm run test:all` | Run every feature. |
 | `npm run test:regression` | Run scenarios tagged `@regression`. |
+| `npm run test:the-internet` | Run every The Internet scenario headlessly. |
+| `npm run test:the-internet:headed` | Run every The Internet scenario with a visible browser. |
 | `npm run test:headed` | Run all tests with a visible browser. |
 | `npm run test:chrome` | Run all tests in Chrome. |
 | `npm run test:record` | Record a run in Cypress Cloud. |
@@ -338,13 +378,16 @@ cypress/
   e2e/features/                 Business-readable Gherkin features
   e2e/step-definitions/         Editable Cucumber step definitions
   support/actions/              Reusable UI, navigation, table, mouse, and keyboard actions
+  support/api/                  Reusable API request and response-validation foundation
   support/components/           Reusable component objects and their locators
   support/core/                 Locator resolution and report logging
   support/data/                 Test-data and secret access
   support/pages/                Page objects and their locators
   support/services/             Sessions, errors, and cross-origin workflows
   test-data/environments/       Environment-specific value overrides
+  test-data/pages/              Application-specific shared data and expected values
   test-data/common.json         Shared inputs and expected values
+  templates/api/                Non-executing API feature, steps, and data templates
 scripts/                        Windows-safe cleanup/report scripts
 reports/                        Generated output; ignored by Git
 ```
@@ -446,6 +489,54 @@ Then element "body" on page "example" should contain data "errors.serviceUnavail
 ```
 
 Use `ErrorSimulationService.forceNetworkError()` for a dropped connection. Register intercepts outside `cy.origin()`.
+
+## API testing templates
+
+The framework includes an API foundation for future service testing without enabling a placeholder external dependency:
+
+- `cypress/support/api/api-client.js` wraps `cy.request()` for GET, POST, PUT, PATCH, DELETE, headers, query parameters, bodies, and negative status handling;
+- `cypress/support/api/api-response-validator.js` validates status, headers, body properties, required fields, and response duration;
+- `cypress/support/utils/url-utils.js` resolves endpoint paths safely;
+- `cypress/templates/api` contains annotated feature, step-definition, and data templates.
+
+The `.template` extensions prevent Cypress from discovering unfinished examples. To activate API coverage:
+
+1. Add an approved non-production API URL to the active environment file:
+
+   ```json
+   {
+     "apiBaseUrl": "https://api.test.example.com"
+   }
+   ```
+
+2. Copy and rename the templates:
+
+   ```powershell
+   New-Item -ItemType Directory -Force cypress/e2e/features/api
+   Copy-Item cypress/templates/api/example-api.feature.template cypress/e2e/features/api/example-api.feature
+   Copy-Item cypress/templates/api/example-api.steps.js.template cypress/e2e/step-definitions/example-api.steps.js
+   Copy-Item cypress/templates/api/example-api-data.json.template cypress/test-data/pages/example-api.json
+   ```
+
+3. Replace the sample endpoint, response contract, and payloads. Register the copied data file in `DataRepository` if its values will be referenced by steps.
+4. Retrieve tokens or credentials through `SecretRepository`; never commit them or write them to reports.
+5. Run the API tag:
+
+   ```powershell
+   npx cypress run --env tags="@api"
+   ```
+
+Example direct API validation:
+
+```javascript
+ApiClient.get('/resources/1').then((response) => {
+  ApiResponseValidator.status(response, 200);
+  ApiResponseValidator.requiredBodyProperties(response, ['id', 'name']);
+  ApiResponseValidator.durationBelow(response, 2000);
+});
+```
+
+Set `failOnStatusCode: false` when intentionally validating 4xx or 5xx responses. The client suppresses raw `cy.request` logging by default so authorization headers and payload details are not accidentally printed; add only sanitized diagnostics through `StepLogger`.
 
 ## Reporting and artifacts
 

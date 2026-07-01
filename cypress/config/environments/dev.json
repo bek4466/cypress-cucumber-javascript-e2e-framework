@@ -1,6 +1,9 @@
 {
-  "baseUrl": "https://example.com",
+  "_notes": "Public non-production endpoints used by the dev automation environment. Add API base URL only when an approved test API is available.",
+  "baseUrl": "https://the-internet.herokuapp.com",
+  "apiBaseUrl": "",
   "domains": {
+    "theInternet": "https://the-internet.herokuapp.com",
     "exampleCom": "https://example.com",
     "exampleOrg": "https://example.org",
     "exampleNet": "https://example.net"
