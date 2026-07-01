@@ -1,0 +1,31 @@
+{
+  "sites": {
+    "exampleCom": {
+      "url": "https://example.com/",
+      "heading": "Example Domain",
+      "description": "This domain is for use in documentation examples without needing permission."
+    },
+    "exampleOrg": {
+      "url": "https://example.org/",
+      "heading": "Example Domain"
+    },
+    "exampleNet": {
+      "url": "https://example.net/",
+      "heading": "Example Domain"
+    }
+  },
+  "errors": {
+    "serviceUnavailable": {
+      "method": "GET",
+      "urlPattern": "https://example.com/",
+      "statusCode": 503,
+      "body": "Temporarily unavailable",
+      "expectedMessage": "Temporarily unavailable"
+    }
+  },
+  "timeouts": {
+    "short": 4000,
+    "standard": 10000,
+    "long": 30000
+  }
+}

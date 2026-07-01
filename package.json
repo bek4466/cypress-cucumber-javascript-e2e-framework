@@ -1,0 +1,74 @@
+{
+  "name": "cypress-cucumber-javascript-e2e-framework",
+  "version": "1.0.0",
+  "description": "Scalable Cypress Cucumber JavaScript end-to-end test automation framework",
+  "private": false,
+  "engines": {
+    "node": ">=24 <25",
+    "npm": ">=11"
+  },
+  "scripts": {
+    "cy:open": "cypress open",
+    "test": "npm run test:smoke",
+    "test:all": "cypress run",
+    "test:smoke": "cypress run --env tags=@smoke",
+    "test:regression": "cypress run --env tags=@regression",
+    "test:headed": "cypress run --headed",
+    "test:chrome": "cypress run --browser chrome",
+    "test:record": "cypress run --record",
+    "test:parallel": "cypress run --record --parallel",
+    "clean:reports": "node scripts/clean-reports.js",
+    "report:cucumber": "node scripts/generate-cucumber-report.js",
+    "report:allure": "node scripts/verify-allure-results.js && allure generate reports/allure-results --clean -o reports/allure-report",
+    "report:allure:open": "allure open reports/allure-report",
+    "lint": "eslint .",
+    "verify": "npm run lint && npm run test:smoke"
+  },
+  "keywords": [
+    "cypress",
+    "cucumber",
+    "e2e",
+    "javascript",
+    "test-automation"
+  ],
+  "author": "Oybek T",
+  "license": "MIT",
+  "devDependencies": {
+    "@badeball/cypress-cucumber-preprocessor": "25.0.0",
+    "@bahmutov/cypress-esbuild-preprocessor": "2.2.8",
+    "allure-commandline": "2.35.1",
+    "allure-cypress": "3.10.2",
+    "cypress": "15.17.0",
+    "cypress-on-fix": "1.1.0",
+    "dotenv": "17.4.2",
+    "eslint": "9.39.2",
+    "globals": "16.5.0",
+    "multiple-cucumber-html-reporter": "4.0.0"
+  },
+  "overrides": {
+    "mocha": {
+      "diff": "8.0.3",
+      "serialize-javascript": "7.0.5"
+    }
+  },
+  "cypress-cucumber-preprocessor": {
+    "stepDefinitions": "cypress/e2e/step-definitions/**/*.js",
+    "filterSpecs": true,
+    "omitFiltered": true,
+    "messages": {
+      "enabled": true,
+      "output": "reports/cucumber-messages/messages.ndjson"
+    },
+    "json": {
+      "enabled": true,
+      "output": "reports/cucumber-json/cucumber-report.json"
+    },
+    "html": {
+      "enabled": false
+    },
+    "attachments": {
+      "addScreenshots": true,
+      "addVideos": true
+    }
+  }
+}

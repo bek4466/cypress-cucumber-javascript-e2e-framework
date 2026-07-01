@@ -1,0 +1,8 @@
+{
+  "baseUrl": "https://example.com",
+  "domains": {
+    "exampleCom": "https://example.com",
+    "exampleOrg": "https://example.org",
+    "exampleNet": "https://example.net"
+  }
+}
