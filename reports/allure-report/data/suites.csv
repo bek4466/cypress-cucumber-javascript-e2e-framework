@@ -1,0 +1,4 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","120","Validate the example domain using centralized values","Centralized page objects and test data","2026-07-01","passed","2026-07-01","","","",""
+"","154","Display a service unavailable response after refresh","Refresh-triggered error simulation","2026-07-01","passed","2026-07-01","","","",""
+"","832","Validate three independent domains during one test","Multiple domains in one scenario","2026-07-01","passed","2026-07-01","","","",""
