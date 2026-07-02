@@ -93,11 +93,13 @@ The Internet implementation is organized here:
 | --- | --- |
 | `npm run cy:open` | Open the interactive Cypress runner. |
 | `npm test` | Run scenarios tagged `@smoke`. |
-| `npm run test:all` | Run every feature. |
+| `npm run test:all` | Run every normal feature; excludes the intentional artifact failure. |
 | `npm run test:regression` | Run scenarios tagged `@regression`. |
 | `npm run test:the-internet` | Run every The Internet scenario headlessly. |
 | `npm run test:the-internet:headed` | Run every The Internet scenario with a visible browser. |
-| `npm run test:headed` | Run all tests with a visible browser. |
+| `npm run test:failure-demo` | Run the intentional failing scenario and return a non-zero exit code. |
+| `npm run test:failure-demo:headed` | Run the intentional failure with a visible browser. |
+| `npm run test:headed` | Run all normal tests with a visible browser. |
 | `npm run test:chrome` | Run all tests in Chrome. |
 | `npm run test:record` | Record a run in Cypress Cloud. |
 | `npm run test:parallel` | Use Cypress Cloud parallel orchestration. |
@@ -353,7 +355,7 @@ npm test
 CYPRESS_environment=dev
 CYPRESS_TEST_USERNAME=
 CYPRESS_TEST_PASSWORD=
-CYPRESS_video=false
+CYPRESS_video=true
 ```
 
 Public URLs and domain configuration are stored in `cypress/config/environments/<environment>.json`. Comparison values and reusable input data are stored under `cypress/test-data`. `DataRepository.get('dot.delimited.key')` merges common data with the active environment override.
@@ -546,7 +548,7 @@ The primary report is Multiple Cucumber HTML Reporter:
 - HTML: `reports/cucumber-html/index.html`
 - Cucumber messages: `reports/cucumber-messages/messages.ndjson`
 
-The report is generated automatically after a run. Cucumber records every Gherkin step and framework actions add readable logs. The preprocessor is configured to attach screenshots and videos. Cypress automatically captures failure screenshots during headless runs.
+The report is generated automatically after a run. Cucumber records every Gherkin step and framework actions add readable logs. A documented Cucumber `After` hook captures a runner screenshot for every scenario, including passed scenarios. The preprocessor and Allure attach those screenshots. Cypress also captures its automatic failure screenshot when an assertion fails.
 
 Allure is configured as a secondary comparison report:
 
@@ -560,7 +562,32 @@ npm run report:allure
 npm run report:allure:open
 ```
 
-Set `CYPRESS_video=true` in `.env` to enable local video recording. Videos are disabled by default to reduce runtime and disk use. Cypress Cloud recording is separate and occurs only with `--record` plus a valid project ID and record key.
+Video recording is enabled by default for every `cypress run` spec, including passed specs. Videos are stored under `cypress/videos` and attached by the configured reporters. Set `CYPRESS_video=false` in `.env` only when a local engineer explicitly wants faster runs without video. Cypress GUI (`cypress open`) does not produce run videos. Cypress Cloud recording is separate and occurs only with `--record` plus a valid project ID and record key.
+
+### Intentional failure artifact test
+
+`cypress/e2e/features/artifact-failure-demo.feature` fails by design. It is tagged only with `@artifact-failure`, so smoke, regression, The Internet, headed, recorded, parallel, and `test:all` commands exclude it.
+
+Run it when validating failure evidence:
+
+```powershell
+npm run test:failure-demo
+```
+
+Or watch it fail in a visible browser:
+
+```powershell
+npm run test:failure-demo:headed
+```
+
+An exit code of `1` is expected. Afterward, inspect:
+
+- `cypress/screenshots/artifact-failure-demo.feature` for the hook and automatic failure screenshots;
+- `cypress/videos/artifact-failure-demo.feature.mp4` for the complete retry/failure recording;
+- `reports/cucumber-html/index.html` after report generation;
+- `reports/allure-results`, then run `npm run report:allure`.
+
+Do not add `@smoke`, `@regression`, or `@the-internet` to this scenario.
 
 ## Parallel execution
 

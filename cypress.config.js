@@ -53,7 +53,7 @@ function loadEnvironmentConfiguration(environment) {
 }
 
 module.exports = defineConfig({
-  video: parseEnvironmentValue(process.env.CYPRESS_video, false),
+  video: parseEnvironmentValue(process.env.CYPRESS_video, true),
   videoCompression: 32,
   screenshotOnRunFailure: true,
   screenshotsFolder: 'cypress/screenshots',
@@ -131,7 +131,7 @@ module.exports = defineConfig({
 
       allureCypress(fixedOn, config, {
         resultsDir: 'reports/allure-results',
-        videoOnFailOnly: true
+        videoOnFailOnly: false
       });
 
       fixedOn('after:run', async () => {
