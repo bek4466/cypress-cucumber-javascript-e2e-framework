@@ -5,6 +5,7 @@ node_modules/
 cypress/downloads/
 cypress/screenshots/
 cypress/videos/
+# Generated report outputs must never be committed.
 reports/
 allure-results/
 allure-report/
