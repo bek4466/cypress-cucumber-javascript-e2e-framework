@@ -18,6 +18,9 @@ Use API-based setup/validation when possible. Never use shared production custom
 | `register-database-tasks.js` | Registers `db2Query` and `snowflakeQuery` Node tasks. |
 | `commands.js` | Exposes `cy.db2Query` and `cy.snowflakeQuery`. |
 | `test/database/database.test.js` | Proves bind/result/cleanup/safety behavior with mock drivers. |
+| `cypress/e2e/features/database/database-connections.feature` | Live, explicitly tagged Db2 and Snowflake connection examples. |
+| `cypress/e2e/step-definitions/database.steps.js` | Cucumber-to-database task integration and health assertion. |
+| `cypress/test-data/database/health-checks.json` | Central read-only health queries and expected value. |
 
 ## Configure environments
 
@@ -50,6 +53,18 @@ Select the environment with:
 ```powershell
 npx cypress run --env environment=staging,tags="@database"
 ```
+
+The normal suites exclude `@requires-external-services`. After configuring the selected environment, run one live provider explicitly:
+
+```powershell
+$env:CYPRESS_environment = "dev"
+npm run test:database:db2
+
+$env:CYPRESS_environment = "staging"
+npm run test:database:snowflake
+```
+
+Each scenario opens the provider connection, runs its centralized read-only health query, attaches the row-count/expected/actual result, and closes the connection. A missing variable, network failure, authentication error, permission error, SQL error, or unexpected value fails the scenario.
 
 ## Query from Cypress
 

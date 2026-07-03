@@ -1,0 +1,10 @@
+{
+  "_notes": "Read-only queries used by the explicitly tagged live database connection examples.",
+  "database": {
+    "healthQueries": {
+      "db2": "SELECT 1 AS HEALTH FROM SYSIBM.SYSDUMMY1",
+      "snowflake": "SELECT 1 AS HEALTH"
+    },
+    "expectedHealthValue": 1
+  }
+}

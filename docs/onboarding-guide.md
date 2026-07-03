@@ -167,6 +167,31 @@ When('I select data {string} in {string} on page {string}', (dataKey, element, p
 - Production accepts only `SELECT`, `WITH`, `SHOW`, `DESCRIBE`, `DESC`, and `EXPLAIN` unless the explicit mutation switch is enabled. Treat the switch as break-glass, not normal configuration.
 - See `database-integrations.md` for setup and examples.
 
+### Run the database Cucumber examples
+
+The repository includes real, opt-in examples—not only mocks:
+
+- feature: `cypress/e2e/features/database/database-connections.feature`;
+- steps: `cypress/e2e/step-definitions/database.steps.js`;
+- queries/expected value: `cypress/test-data/database/health-checks.json`;
+- private connection configuration: `.env` based on `.env.example`.
+
+The feature is tagged `@database @requires-external-services`; its scenarios add `@db2` or `@snowflake`. Normal, headed, recorded, and parallel suites exclude the external-services tag so a new engineer cannot accidentally contact a database.
+
+After selecting and configuring an approved environment, run:
+
+```powershell
+# IBM Db2 using DB2_DEV_CONNECTION_STRING
+$env:CYPRESS_environment = "dev"
+npm run test:database:db2
+
+# Snowflake using the SNOWFLAKE_STAGING_* variables
+$env:CYPRESS_environment = "staging"
+npm run test:database:snowflake
+```
+
+Expected flow: the step reads its SQL from `DataRepository`, calls `cy.db2Query` or `cy.snowflakeQuery`, the Node task applies safety/configuration, the driver opens and executes, `finally` closes the connection, and the final step validates/attaches the `HEALTH` result. Do not run either command until the corresponding secrets and runner network access are ready.
+
 ## Level 9: execute and investigate
 
 Useful commands:

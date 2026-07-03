@@ -104,6 +104,8 @@ The Internet implementation is organized here:
 | `npm run test:regression` | Run scenarios tagged `@regression`. |
 | `npm run test:the-internet` | Run every The Internet scenario headlessly. |
 | `npm run test:the-internet:headed` | Run every The Internet scenario with a visible browser. |
+| `npm run test:database:db2` | Run the live IBM Db2 connection example; requires configured credentials. |
+| `npm run test:database:snowflake` | Run the live Snowflake connection example; requires configured credentials. |
 | `npm run test:failure-demo` | Run the intentional failing scenario and return a non-zero exit code. |
 | `npm run test:failure-demo:headed` | Run the intentional failure with a visible browser. |
 | `npm run test:headed` | Run all normal tests with a visible browser. |
@@ -622,6 +624,13 @@ cy.snowflakeQuery('SELECT EVENT_TYPE FROM AUDIT_EVENTS WHERE EVENT_ID = ?', [eve
 ```
 
 Production database mutations are blocked by default, and SQL batches are rejected in every environment. Run `npm run test:unit` to verify the adapters with mock databases—no live credentials are required. Full setup and safety rules are in [the database guide](docs/database-integrations.md).
+
+Executable Cucumber examples are located in `cypress/e2e/features/database/database-connections.feature`, with documented definitions in `cypress/e2e/step-definitions/database.steps.js` and queries/expected values in `cypress/test-data/database/health-checks.json`. They are tagged `@requires-external-services` and excluded from normal suites. Run them only after configuring `.env`:
+
+```powershell
+npm run test:database:db2
+npm run test:database:snowflake
+```
 
 Use `ThirdPartyApiMonitor.verify()` for dependent-application API permissions and contracts. A mismatch attaches a redacted comparison containing the call, expected and actual status/fields, duration, and available correlation IDs before failing the scenario.
 

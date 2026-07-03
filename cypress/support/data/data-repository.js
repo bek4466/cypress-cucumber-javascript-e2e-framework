@@ -1,5 +1,6 @@
 const commonData = require('../../test-data/common.json');
 const theInternetData = require('../../test-data/pages/the-internet.json');
+const databaseData = require('../../test-data/database/health-checks.json');
 const devData = require('../../test-data/environments/dev.json');
 const stagingData = require('../../test-data/environments/staging.json');
 const prodData = require('../../test-data/environments/prod.json');
@@ -31,7 +32,10 @@ class DataRepository {
       );
     }
 
-    return deepMerge(deepMerge(commonData, theInternetData), override);
+    return deepMerge(
+      deepMerge(deepMerge(commonData, theInternetData), databaseData),
+      override
+    );
   }
 
   /**
