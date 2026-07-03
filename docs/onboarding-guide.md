@@ -254,3 +254,9 @@ npm run zephyr:create-from-story -- --jira-id QA-123 --description-file ".\story
 ```
 
 Review names, preconditions, steps, test data, expected results, labels, project/folder, and missing negative/boundary coverage. Creation requires both `ZEPHYR_ENABLED=true` and `--confirm`. Existing linked coverage blocks duplicates unless `--allow-existing` is deliberately supplied after review. Follow `docs/zephyr-scale-integration.md` for credentials, custom fields, failure recovery, and CI gating.
+
+## Post-build report delivery
+
+`npm run report:notify` reads Cucumber JSON and always creates JSON, Markdown, and HTML summaries under `reports/notification-bundle`. The GitLab template runs it in an `always` notification stage after downloading E2E artifacts.
+
+Teams, Slack, and email are independently enabled. Store webhook URLs and SMTP credentials as protected/masked variables. Email distribution lists use `REPORT_EMAIL_TO`, `REPORT_EMAIL_CC`, and `REPORT_EMAIL_BCC`. Run locally with `CI_NOTIFICATIONS_ENABLED=false` to review the bundle without sending anything. Follow `docs/ci-report-notifications.md` before enabling a destination.

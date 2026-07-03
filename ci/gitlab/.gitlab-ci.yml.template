@@ -3,6 +3,7 @@
 stages:
   - quality
   - e2e
+  - notify
 
 variables:
   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/.cache/Cypress"
@@ -38,6 +39,24 @@ e2e:
     when: always
     expire_in: 14 days
     paths:
+      - reports/
+      - cypress/screenshots/
+      - cypress/videos/
+
+# Runs after E2E even when tests fail, downloads the E2E artifacts, builds a
+# summary bundle, and sends only destinations enabled by protected variables.
+notify:
+  stage: notify
+  when: always
+  dependencies:
+    - e2e
+  script:
+    - npm run report:notify
+  artifacts:
+    when: always
+    expire_in: 14 days
+    paths:
+      # Re-publish downloaded E2E evidence so CI_JOB_URL resolves every link.
       - reports/
       - cypress/screenshots/
       - cypress/videos/

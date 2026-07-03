@@ -9,6 +9,7 @@ A scalable end-to-end automation framework built with Cypress, Cucumber/Gherkin,
 - [Framework flow diagrams](docs/framework-flow-diagrams.md): visual authoring, runtime, multi-domain, API/database, reporting, and CI flows.
 - [IBM Db2 and Snowflake integration](docs/database-integrations.md): connection templates, Cypress queries, production safety, mock verification, and troubleshooting.
 - [Zephyr Scale Cloud integration](docs/zephyr-scale-integration.md): Jira story reading, test-case generation, preview, creation, linking, and CI secret setup.
+- [CI report notifications](docs/ci-report-notifications.md): reusable report bundle plus automatic Teams, Slack, and email delivery.
 
 ## Supported baseline
 
@@ -118,6 +119,7 @@ The Internet implementation is organized here:
 | `npm run report:cucumber` | Regenerate the primary HTML report from Cucumber JSON. |
 | `npm run report:allure` | Generate the secondary Allure HTML report. |
 | `npm run report:allure:open` | Start the local Allure report server. |
+| `npm run report:notify` | Create the CI summary bundle and send enabled Teams/Slack/email notifications. |
 | `npm run test:unit` | Run mock database, API diagnostic, and Jira integration tests without external systems. |
 | `npm run jira:update` | Update Jira Cloud from CI when explicitly enabled. |
 | `npm run zephyr:create-from-story -- --jira-id QA-123` | Preview Zephyr Scale cases generated from a Jira story. |
@@ -672,6 +674,16 @@ npm run zephyr:create-from-story -- --jira-id QA-123 --description "Additional a
 ```
 
 See the [Zephyr Scale guide](docs/zephyr-scale-integration.md) before using `--allow-existing`.
+
+## CI report notifications
+
+After test execution, `npm run report:notify` reads Cucumber JSON and creates:
+
+- `reports/notification-bundle/ci-test-summary.json`;
+- `reports/notification-bundle/ci-test-summary.md`;
+- `reports/notification-bundle/ci-test-summary.html`.
+
+The GitLab template runs this in an `always` notification stage after E2E artifacts are available. Slack and Teams receive result cards with an artifact link. Email recipients receive HTML/text results plus all three summary files as attachments. Configure distribution lists through `REPORT_EMAIL_TO`, `REPORT_EMAIL_CC`, and `REPORT_EMAIL_BCC`; enable destinations independently with protected CI variables. See [CI report notifications](docs/ci-report-notifications.md).
 
 ## Adding a new test area
 
