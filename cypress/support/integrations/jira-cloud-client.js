@@ -42,6 +42,19 @@ class JiraCloudClient {
   }
 
   /**
+   * Reads the fields needed to generate Zephyr Scale test cases from a Jira
+   * user story. Jira accepts either a numeric issue ID or an issue key.
+   * @param {string} issueIdOrKey Jira issue ID or key such as QA-123.
+   * @returns {Promise<object>} Jira issue containing ID, key, and fields.
+   */
+  async getIssue(issueIdOrKey) {
+    const fields = ['summary', 'description', 'issuetype', 'project', 'labels', 'priority'];
+    return this.request(
+      `/rest/api/3/issue/${encodeURIComponent(issueIdOrKey)}?fields=${fields.join(',')}`
+    );
+  }
+
+  /**
    * Resolves an available issue transition by ID or case-insensitive name.
    * @param {string} issueKey Jira issue key.
    * @param {string} transitionNameOrId Configured transition.

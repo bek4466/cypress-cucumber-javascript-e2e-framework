@@ -72,3 +72,15 @@ e2e:
       - reports/
       - cypress/screenshots/
       - cypress/videos/
+
+# Manual template for reviewed Jira-to-Zephyr Scale creation. Extend it into a
+# visible job only after configuring protected Jira/Zephyr tokens and an issue
+# key. Normal E2E pipelines must never create test-management records.
+.zephyr_story_creation_template:
+  stage: quality
+  when: manual
+  allow_failure: false
+  variables:
+    ZEPHYR_ENABLED: "true"
+  script:
+    - npm run zephyr:create-from-story -- --jira-id "$JIRA_ISSUE_KEY" --confirm

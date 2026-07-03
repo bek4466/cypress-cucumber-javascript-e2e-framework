@@ -30,6 +30,7 @@
     "report:allure:open": "allure open reports/allure-report",
     "test:unit": "node --test",
     "jira:update": "node scripts/update-jira-from-ci.js",
+    "zephyr:create-from-story": "node scripts/create-zephyr-tests-from-jira.js",
     "lint": "eslint .",
     "verify": "npm run lint && npm run test:unit && npm run test:smoke"
   },

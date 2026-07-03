@@ -244,3 +244,13 @@ The engineer is onboarded when they can complete this checklist, explain the flo
 `scripts/update-jira-from-ci.js` is an opt-in Jira Cloud REST v3 adapter. Configure protected variables `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN`, `JIRA_ISSUE_KEY`, `JIRA_PASS_TRANSITION`, and `JIRA_FAIL_TRANSITION`, then set `JIRA_ENABLED=true`. The API user must be allowed to browse and transition the issue and add comments. Transition names must be available in the issue's current workflow state.
 
 Review `ci/gitlab/.gitlab-ci.yml.template`, then copy it to `.gitlab-ci.yml` only when CI is approved. It publishes reports/screenshots/videos with `when: always`. Review `ci/docker/Dockerfile` and `docker-compose.yml` for the pinned Linux execution image. Keep GitLab variables protected and masked; never place secrets in YAML.
+
+## Zephyr Scale Cloud story handoff
+
+The Zephyr script reads a Jira story and previews test cases by default:
+
+```powershell
+npm run zephyr:create-from-story -- --jira-id QA-123 --description-file ".\story-details.txt"
+```
+
+Review names, preconditions, steps, test data, expected results, labels, project/folder, and missing negative/boundary coverage. Creation requires both `ZEPHYR_ENABLED=true` and `--confirm`. Existing linked coverage blocks duplicates unless `--allow-existing` is deliberately supplied after review. Follow `docs/zephyr-scale-integration.md` for credentials, custom fields, failure recovery, and CI gating.

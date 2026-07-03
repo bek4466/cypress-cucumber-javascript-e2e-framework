@@ -8,6 +8,7 @@ A scalable end-to-end automation framework built with Cypress, Cucumber/Gherkin,
 - [Framework design review](docs/framework-design-review.md): architecture decisions, alternatives, pros, cons, risks, and review triggers.
 - [Framework flow diagrams](docs/framework-flow-diagrams.md): visual authoring, runtime, multi-domain, API/database, reporting, and CI flows.
 - [IBM Db2 and Snowflake integration](docs/database-integrations.md): connection templates, Cypress queries, production safety, mock verification, and troubleshooting.
+- [Zephyr Scale Cloud integration](docs/zephyr-scale-integration.md): Jira story reading, test-case generation, preview, creation, linking, and CI secret setup.
 
 ## Supported baseline
 
@@ -119,6 +120,7 @@ The Internet implementation is organized here:
 | `npm run report:allure:open` | Start the local Allure report server. |
 | `npm run test:unit` | Run mock database, API diagnostic, and Jira integration tests without external systems. |
 | `npm run jira:update` | Update Jira Cloud from CI when explicitly enabled. |
+| `npm run zephyr:create-from-story -- --jira-id QA-123` | Preview Zephyr Scale cases generated from a Jira story. |
 | `npm run lint` | Run static JavaScript checks. |
 | `npm run verify` | Run lint and the smoke suite. |
 
@@ -655,6 +657,21 @@ The selected connection variable is `DB2_<ENVIRONMENT>_<PROFILE>_CONNECTION_STRI
 Use `ThirdPartyApiMonitor.verify()` for dependent-application API permissions and contracts. A mismatch attaches a redacted comparison containing the call, expected and actual status/fields, duration, and available correlation IDs before failing the scenario.
 
 Jira Cloud updates are disabled unless `JIRA_ENABLED=true`. The Node script comments with the test result/build link and resolves the configured passing or failing workflow transition. GitLab and Docker files under `ci` are reviewable templates, not active pipelines. See [the onboarding guide](docs/onboarding-guide.md#jira-cloud-and-ci-handoff).
+
+Zephyr Scale creation is also disabled by default. The script reads a Jira issue, converts its ADF description to text, derives cases from explicit Gherkin scenarios or acceptance-criteria bullets, writes ordered steps, and links every created case back to the numeric Jira issue ID. Preview before enabling writes:
+
+```powershell
+npm run zephyr:create-from-story -- --jira-id QA-123 --description "Additional acceptance criterion"
+```
+
+After reviewing the preview and configuring the Zephyr token:
+
+```powershell
+$env:ZEPHYR_ENABLED = "true"
+npm run zephyr:create-from-story -- --jira-id QA-123 --description "Additional acceptance criterion" --confirm
+```
+
+See the [Zephyr Scale guide](docs/zephyr-scale-integration.md) before using `--allow-existing`.
 
 ## Adding a new test area
 
