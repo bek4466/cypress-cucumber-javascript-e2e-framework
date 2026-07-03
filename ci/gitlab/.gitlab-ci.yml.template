@@ -55,3 +55,20 @@ e2e:
       - reports/
       - cypress/screenshots/
       - cypress/videos/
+
+# Opt-in live IBM Db2 example. Extend this hidden job only after adding
+# DB2_DEV_CLOUD_CONNECTION_STRING as a protected/masked GitLab variable and
+# allowing the runner network to reach the IBM Cloud hostname and port.
+.db2_cloud_template:
+  stage: e2e
+  variables:
+    CYPRESS_environment: "dev"
+    DB2_CONNECTION_PROFILE: "cloud"
+  script:
+    - npm run test:database:db2
+  artifacts:
+    when: always
+    paths:
+      - reports/
+      - cypress/screenshots/
+      - cypress/videos/

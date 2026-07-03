@@ -25,6 +25,22 @@ function environmentPrefix(environment) {
 }
 
 /**
+ * Resolves whether Db2 uses a developer-local or cloud-hosted connection.
+ * @param {NodeJS.ProcessEnv} source Injectable environment map for tests.
+ * @returns {'local'|'cloud'} Validated connection profile.
+ */
+function db2ConnectionProfile(source = process.env) {
+  const profile = String(source.DB2_CONNECTION_PROFILE || 'local').toLowerCase();
+  if (!['local', 'cloud'].includes(profile)) {
+    throw new Error(
+      `Unsupported DB2_CONNECTION_PROFILE '${source.DB2_CONNECTION_PROFILE}'. ` +
+        "Expected 'local' or 'cloud'."
+    );
+  }
+  return profile;
+}
+
+/**
  * Builds private driver configuration for the active environment.
  * @param {'db2'|'snowflake'} database Database provider.
  * @param {string} environment Logical environment.
@@ -34,7 +50,17 @@ function environmentPrefix(environment) {
 function resolveDatabaseConfig(database, environment, source = process.env) {
   const prefix = environmentPrefix(environment);
   if (database === 'db2') {
-    return { connectionString: requiredVariable(`DB2_${prefix}_CONNECTION_STRING`, source) };
+    const profile = db2ConnectionProfile(source);
+    const profileVariable = `DB2_${prefix}_${profile.toUpperCase()}_CONNECTION_STRING`;
+    const legacyVariable = `DB2_${prefix}_CONNECTION_STRING`;
+    const connectionString = source[profileVariable] || source[legacyVariable];
+    if (!connectionString) {
+      throw new Error(
+        `Required database variable '${profileVariable}' is not configured. ` +
+          `The legacy fallback '${legacyVariable}' is also empty.`
+      );
+    }
+    return { connectionString, profile };
   }
   if (database === 'snowflake') {
     const variable = (suffix) => requiredVariable(`SNOWFLAKE_${prefix}_${suffix}`, source);
@@ -51,4 +77,4 @@ function resolveDatabaseConfig(database, environment, source = process.env) {
   throw new Error(`Unsupported database provider '${database}'.`);
 }
 
-module.exports = { resolveDatabaseConfig };
+module.exports = { db2ConnectionProfile, resolveDatabaseConfig };

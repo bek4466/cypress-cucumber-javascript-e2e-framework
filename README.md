@@ -105,6 +105,7 @@ The Internet implementation is organized here:
 | `npm run test:the-internet` | Run every The Internet scenario headlessly. |
 | `npm run test:the-internet:headed` | Run every The Internet scenario with a visible browser. |
 | `npm run test:database:db2` | Run the live IBM Db2 connection example; requires configured credentials. |
+| `npm run test:database:db2:record` | Run the Db2 scenario and record it in Cypress Cloud. |
 | `npm run test:database:snowflake` | Run the live Snowflake connection example; requires configured credentials. |
 | `npm run test:failure-demo` | Run the intentional failing scenario and return a non-zero exit code. |
 | `npm run test:failure-demo:headed` | Run the intentional failure with a visible browser. |
@@ -631,6 +632,25 @@ Executable Cucumber examples are located in `cypress/e2e/features/database/datab
 npm run test:database:db2
 npm run test:database:snowflake
 ```
+
+Select a local or cloud-hosted IBM Db2 endpoint with `DB2_CONNECTION_PROFILE`:
+
+```powershell
+# Developer-local Db2
+$env:CYPRESS_environment = "dev"
+$env:DB2_CONNECTION_PROFILE = "local"
+npm run test:database:db2
+
+# IBM Db2 on Cloud
+$env:CYPRESS_environment = "dev"
+$env:DB2_CONNECTION_PROFILE = "cloud"
+npm run test:database:db2
+
+# Same cloud profile, recorded in Cypress Cloud
+npm run test:database:db2:record
+```
+
+The selected connection variable is `DB2_<ENVIRONMENT>_<PROFILE>_CONNECTION_STRING`, such as `DB2_DEV_LOCAL_CONNECTION_STRING` or `DB2_DEV_CLOUD_CONNECTION_STRING`. Values belong in the ignored `.env` file locally and protected/masked CI variables remotely.
 
 Use `ThirdPartyApiMonitor.verify()` for dependent-application API permissions and contracts. A mismatch attaches a redacted comparison containing the call, expected and actual status/fields, duration, and available correlation IDs before failing the scenario.
 

@@ -16,6 +16,7 @@
     "test:the-internet": "cypress run --env tags=@the-internet",
     "test:the-internet:headed": "cypress run --headed --env tags=@the-internet",
     "test:database:db2": "cypress run --env tags=\"@database and @db2\"",
+    "test:database:db2:record": "cypress run --record --env tags=\"@database and @db2\"",
     "test:database:snowflake": "cypress run --env tags=\"@database and @snowflake\"",
     "test:failure-demo": "cypress run --env tags=@artifact-failure",
     "test:failure-demo:headed": "cypress run --headed --env tags=@artifact-failure",

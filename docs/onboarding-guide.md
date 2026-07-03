@@ -190,6 +190,22 @@ $env:CYPRESS_environment = "staging"
 npm run test:database:snowflake
 ```
 
+For the IBM Db2 scenario, select exactly one endpoint profile. The framework resolves `DB2_<ENVIRONMENT>_<PROFILE>_CONNECTION_STRING`:
+
+```powershell
+# Local developer/on-premise endpoint -> DB2_DEV_LOCAL_CONNECTION_STRING
+$env:CYPRESS_environment = "dev"
+$env:DB2_CONNECTION_PROFILE = "local"
+npm run test:database:db2
+
+# IBM Cloud endpoint -> DB2_DEV_CLOUD_CONNECTION_STRING
+$env:CYPRESS_environment = "dev"
+$env:DB2_CONNECTION_PROFILE = "cloud"
+npm run test:database:db2
+```
+
+To record the selected Db2 scenario in Cypress Cloud, configure `CYPRESS_PROJECT_ID` and `CYPRESS_RECORD_KEY`, then run `npm run test:database:db2:record`. In GitLab, supply the same variables through protected/masked CI/CD settings and use the hidden `.db2_cloud_template` as the starting job template. Connection profile and execution platform are independent: a local Cypress process can test cloud Db2, and a GitLab runner can test a private Db2 only when its network permits it.
+
 Expected flow: the step reads its SQL from `DataRepository`, calls `cy.db2Query` or `cy.snowflakeQuery`, the Node task applies safety/configuration, the driver opens and executes, `finally` closes the connection, and the final step validates/attaches the `HEALTH` result. Do not run either command until the corresponding secrets and runner network access are ready.
 
 ## Level 9: execute and investigate

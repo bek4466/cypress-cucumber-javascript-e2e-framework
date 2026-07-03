@@ -4,6 +4,7 @@ const { Db2Client } = require('../../cypress/support/database/db2-client');
 const { SnowflakeClient } = require('../../cypress/support/database/snowflake-client');
 const { DatabaseService } = require('../../cypress/support/database/database-service');
 const { assertQueryAllowed } = require('../../cypress/support/database/database-safety');
+const { resolveDatabaseConfig } = require('../../cypress/support/database/database-config');
 
 /**
  * These tests use driver-compatible mock databases. They verify binds,
@@ -119,4 +120,32 @@ test('database service routes an environment-specific mocked Db2 query', async (
     sql: 'SELECT 1 AS HEALTH'
   });
   assert.deepEqual(rows, [{ HEALTH: 1 }]);
+});
+
+test('Db2 configuration selects local and cloud profiles without exposing both', () => {
+  const source = {
+    DB2_CONNECTION_PROFILE: 'cloud',
+    DB2_DEV_LOCAL_CONNECTION_STRING: 'local-db2',
+    DB2_DEV_CLOUD_CONNECTION_STRING: 'cloud-db2'
+  };
+  assert.deepEqual(resolveDatabaseConfig('db2', 'dev', source), {
+    connectionString: 'cloud-db2',
+    profile: 'cloud'
+  });
+
+  source.DB2_CONNECTION_PROFILE = 'local';
+  assert.deepEqual(resolveDatabaseConfig('db2', 'dev', source), {
+    connectionString: 'local-db2',
+    profile: 'local'
+  });
+});
+
+test('Db2 configuration rejects an unknown connection profile', () => {
+  assert.throws(
+    () =>
+      resolveDatabaseConfig('db2', 'dev', {
+        DB2_CONNECTION_PROFILE: 'shared'
+      }),
+    /Expected 'local' or 'cloud'/
+  );
 });

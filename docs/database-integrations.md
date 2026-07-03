@@ -26,13 +26,23 @@ Use API-based setup/validation when possible. Never use shared production custom
 
 Copy `.env.example` to ignored `.env`. Configure only the environments used locally. CI values belong in protected/masked variables.
 
-Db2 connection format:
+Db2 has two endpoint profiles selected by `DB2_CONNECTION_PROFILE=local|cloud`. The resolved variable format is `DB2_<ENVIRONMENT>_<PROFILE>_CONNECTION_STRING`.
+
+Local/developer connection format:
 
 ```text
-DATABASE=sample;HOSTNAME=db2-dev.example.com;PORT=50000;PROTOCOL=TCPIP;UID=test_user;PWD=secret;
+DB2_CONNECTION_PROFILE=local
+DB2_DEV_LOCAL_CONNECTION_STRING=DATABASE=SAMPLE;HOSTNAME=localhost;PORT=50000;PROTOCOL=TCPIP;UID=test_user;PWD=secret;
 ```
 
-Use `SECURITY=SSL` and your organization's approved certificate properties for TLS. IBM Db2 variables are `DB2_DEV_CONNECTION_STRING`, `DB2_STAGING_CONNECTION_STRING`, and `DB2_PROD_CONNECTION_STRING`.
+IBM Db2 on Cloud connection format:
+
+```text
+DB2_CONNECTION_PROFILE=cloud
+DB2_DEV_CLOUD_CONNECTION_STRING=DATABASE=BLUDB;HOSTNAME=<service-hostname>;PORT=<service-port>;PROTOCOL=TCPIP;UID=<service-user>;PWD=<service-password>;SECURITY=SSL;
+```
+
+Use the hostname, port, database, user ID, and password supplied in IBM Cloud service credentials. IBM Db2 on Cloud uses SSL connections, so retain `SECURITY=SSL` and apply any certificate properties required by your organization. Configure the same local/cloud pair for staging or prod by replacing `DEV` in the variable name. The older `DB2_<ENVIRONMENT>_CONNECTION_STRING` remains a compatibility fallback but should not be used for new setup.
 
 Snowflake uses seven variables per environment:
 
@@ -65,6 +75,38 @@ npm run test:database:snowflake
 ```
 
 Each scenario opens the provider connection, runs its centralized read-only health query, attaches the row-count/expected/actual result, and closes the connection. A missing variable, network failure, authentication error, permission error, SQL error, or unexpected value fails the scenario.
+
+### Local execution versus cloud execution
+
+The connection profile chooses the Db2 endpoint; the test command chooses where Cypress results are recorded.
+
+Local PowerShell against developer Db2:
+
+```powershell
+$env:CYPRESS_environment = "dev"
+$env:DB2_CONNECTION_PROFILE = "local"
+npm run test:database:db2
+```
+
+Local PowerShell against IBM Db2 on Cloud:
+
+```powershell
+$env:CYPRESS_environment = "dev"
+$env:DB2_CONNECTION_PROFILE = "cloud"
+npm run test:database:db2
+```
+
+Recorded in Cypress Cloud against IBM Db2 on Cloud:
+
+```powershell
+$env:CYPRESS_environment = "dev"
+$env:DB2_CONNECTION_PROFILE = "cloud"
+$env:CYPRESS_PROJECT_ID = "configured-project-id"
+$env:CYPRESS_RECORD_KEY = "configured-record-key"
+npm run test:database:db2:record
+```
+
+For GitLab, store `DB2_CONNECTION_PROFILE=cloud`, `CYPRESS_environment=dev`, and `DB2_DEV_CLOUD_CONNECTION_STRING` as protected CI/CD variables. Never write the connection string into `.gitlab-ci.yml` or job output. The runner also needs DNS/firewall access to the IBM Cloud hostname and port.
 
 ## Query from Cypress
 
