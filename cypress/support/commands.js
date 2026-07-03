@@ -74,3 +74,23 @@ Cypress.Commands.add('refreshPage', (force = false, options = {}) =>
 Cypress.Commands.add('cacheSession', (id, setup, validate, acrossSpecs = true) =>
   SessionManager.cache(id, setup, validate, acrossSpecs)
 );
+
+/**
+ * Runs a parameterized IBM Db2 query in Cypress's Node process.
+ * @param {string} sql Single SQL statement.
+ * @param {Array<*>} params Positional bind values.
+ * @returns {Cypress.Chainable<Array<object>|object>} Database result.
+ */
+Cypress.Commands.add('db2Query', (sql, params = []) =>
+  cy.task('db2Query', { sql, params }, { log: false })
+);
+
+/**
+ * Runs a parameterized Snowflake query in Cypress's Node process.
+ * @param {string} sql Single SQL statement.
+ * @param {Array<*>} binds Values for ? placeholders.
+ * @returns {Cypress.Chainable<Array<object>>} Returned rows.
+ */
+Cypress.Commands.add('snowflakeQuery', (sql, binds = []) =>
+  cy.task('snowflakeQuery', { sql, binds }, { log: false })
+);

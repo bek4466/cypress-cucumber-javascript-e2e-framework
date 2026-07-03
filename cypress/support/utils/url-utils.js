@@ -10,6 +10,9 @@ class UrlUtils {
    * @returns {string} Fully resolved URL.
    */
   static resolve(baseUrl, resourcePath) {
+    if (/^https?:\/\//i.test(resourcePath)) {
+      return new URL(resourcePath).toString();
+    }
     if (!baseUrl) {
       throw new Error('A base URL is required to resolve a resource path.');
     }

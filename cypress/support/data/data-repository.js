@@ -1,10 +1,14 @@
 const commonData = require('../../test-data/common.json');
 const theInternetData = require('../../test-data/pages/the-internet.json');
 const devData = require('../../test-data/environments/dev.json');
+const stagingData = require('../../test-data/environments/staging.json');
+const prodData = require('../../test-data/environments/prod.json');
 const { deepMerge, getRequiredValue } = require('../utils/object-utils');
 
 const environmentData = {
-  dev: devData
+  dev: devData,
+  staging: stagingData,
+  prod: prodData
 };
 
 /**

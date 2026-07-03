@@ -1,0 +1,11 @@
+{
+  "_notes": "Template public configuration for staging. Replace URLs with approved staging endpoints; never place credentials here.",
+  "baseUrl": "https://the-internet.herokuapp.com",
+  "apiBaseUrl": "",
+  "domains": {
+    "theInternet": "https://the-internet.herokuapp.com",
+    "exampleCom": "https://example.com",
+    "exampleOrg": "https://example.org",
+    "exampleNet": "https://example.net"
+  }
+}

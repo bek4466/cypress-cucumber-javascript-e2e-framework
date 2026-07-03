@@ -1,0 +1,12 @@
+# Notes:
+# Copy this file into cypress/e2e/features/api and remove .template.
+# Copy/rename the paired step and data templates before running this scenario.
+# The monitor attaches a redacted comparison before a permission/contract failure.
+@api @third-party-contract
+Feature: Third-party permission contract
+  As an SDET
+  I want permission drift to produce actionable dependency evidence
+  So that an external authorization change is not reported as a generic UI failure
+
+  Scenario: The entitlement dependency permits the required operation
+    When I verify the configured third-party permission contract

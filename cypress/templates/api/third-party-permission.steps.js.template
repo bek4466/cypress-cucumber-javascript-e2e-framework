@@ -1,0 +1,23 @@
+// Notes:
+// Copy to cypress/e2e/step-definitions/third-party-permission.steps.js.
+// Copy the paired JSON template to cypress/test-data/pages/third-party-api.json.
+// Request credentials must come from SecretRepository or an allow-listed task.
+const { When } = require('@badeball/cypress-cucumber-preprocessor');
+const {
+  ThirdPartyApiMonitor
+} = require('../../support/api/third-party-api-monitor');
+const thirdPartyData = require('../../test-data/pages/third-party-api.json');
+
+/**
+ * Calls a dependency with automatic HTTP failure disabled, compares its
+ * permission contract, and attaches redacted failure diagnostics.
+ */
+When('I verify the configured third-party permission contract', () => {
+  ThirdPartyApiMonitor.verify({
+    name: thirdPartyData.name,
+    baseUrl: thirdPartyData.baseUrl,
+    path: thirdPartyData.path,
+    method: thirdPartyData.method,
+    contract: thirdPartyData.contract
+  });
+});

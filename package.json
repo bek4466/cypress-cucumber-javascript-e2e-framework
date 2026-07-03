@@ -25,8 +25,10 @@
     "report:cucumber": "node scripts/generate-cucumber-report.js",
     "report:allure": "node scripts/verify-allure-results.js && allure generate reports/allure-results --clean -o reports/allure-report",
     "report:allure:open": "allure open reports/allure-report",
+    "test:unit": "node --test",
+    "jira:update": "node scripts/update-jira-from-ci.js",
     "lint": "eslint .",
-    "verify": "npm run lint && npm run test:smoke"
+    "verify": "npm run lint && npm run test:unit && npm run test:smoke"
   },
   "keywords": [
     "cypress",
@@ -47,6 +49,8 @@
     "dotenv": "17.4.2",
     "eslint": "9.39.2",
     "globals": "16.5.0",
+    "ibm_db": "4.0.1",
+    "snowflake-sdk": "3.0.0",
     "multiple-cucumber-html-reporter": "4.0.0"
   },
   "overrides": {

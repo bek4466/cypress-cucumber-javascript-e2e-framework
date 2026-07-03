@@ -1,0 +1,6 @@
+{
+  "_notes": "Only values that differ from common test data belong here.",
+  "environment": {
+    "name": "staging"
+  }
+}

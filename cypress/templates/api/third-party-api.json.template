@@ -1,0 +1,20 @@
+{
+  "_notes": "Copy to cypress/test-data/pages/third-party-api.json. Keep credentials out of this file.",
+  "name": "Entitlements API",
+  "baseUrl": "https://approved-test-service.example.com",
+  "path": "/v1/permissions/current-user",
+  "method": "GET",
+  "contract": {
+    "expectedStatus": 200,
+    "requiredBodyProperties": [
+      "permissions.read"
+    ],
+    "expectedBodyProperties": {
+      "permissions.read": true
+    },
+    "expectedHeaders": {
+      "content-type": "application/json"
+    },
+    "maximumDurationMs": 3000
+  }
+}

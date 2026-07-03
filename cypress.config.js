@@ -12,6 +12,9 @@ const { allureCypress } = require('allure-cypress/reporter');
 const cypressOnFix = require('cypress-on-fix');
 const dotenv = require('dotenv');
 const { generateCucumberReport } = require('./scripts/generate-cucumber-report');
+const {
+  registerDatabaseTasks
+} = require('./cypress/support/database/register-database-tasks');
 
 dotenv.config({ path: path.resolve(__dirname, '.env'), quiet: true });
 
@@ -128,6 +131,8 @@ module.exports = defineConfig({
           return value;
         }
       });
+
+      registerDatabaseTasks(fixedOn, environment);
 
       allureCypress(fixedOn, config, {
         resultsDir: 'reports/allure-results',

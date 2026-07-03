@@ -2,6 +2,13 @@
 
 A scalable end-to-end automation framework built with Cypress, Cucumber/Gherkin, JavaScript, Node.js, and npm. It provides centralized page objects, reusable actions, environment-aware test data, multi-domain workflows, session caching, error simulation, Cucumber HTML reporting, and Allure reporting.
 
+## Documentation
+
+- [SDET onboarding and automation checklist](docs/onboarding-guide.md): ground-zero setup through design, implementation, debugging, review, Jira, and CI handoff.
+- [Framework design review](docs/framework-design-review.md): architecture decisions, alternatives, pros, cons, risks, and review triggers.
+- [Framework flow diagrams](docs/framework-flow-diagrams.md): visual authoring, runtime, multi-domain, API/database, reporting, and CI flows.
+- [IBM Db2 and Snowflake integration](docs/database-integrations.md): connection templates, Cypress queries, production safety, mock verification, and troubleshooting.
+
 ## Supported baseline
 
 - Windows 10 or Windows 11
@@ -107,6 +114,8 @@ The Internet implementation is organized here:
 | `npm run report:cucumber` | Regenerate the primary HTML report from Cucumber JSON. |
 | `npm run report:allure` | Generate the secondary Allure HTML report. |
 | `npm run report:allure:open` | Start the local Allure report server. |
+| `npm run test:unit` | Run mock database, API diagnostic, and Jira integration tests without external systems. |
+| `npm run jira:update` | Update Jira Cloud from CI when explicitly enabled. |
 | `npm run lint` | Run static JavaScript checks. |
 | `npm run verify` | Run lint and the smoke suite. |
 
@@ -501,6 +510,8 @@ The framework includes an API foundation for future service testing without enab
 - `cypress/support/utils/url-utils.js` resolves endpoint paths safely;
 - `cypress/templates/api` contains annotated feature, step-definition, and data templates.
 
+The same folder includes a paired third-party permission-contract template. It uses `ThirdPartyApiMonitor` to record redacted expected-versus-actual status, fields, duration, response body, and correlation headers before failing.
+
 The `.template` extensions prevent Cypress from discovering unfinished examples. To activate API coverage:
 
 1. Add an approved non-production API URL to the active environment file:
@@ -600,6 +611,21 @@ Do not add `@smoke`, `@regression`, or `@the-internet` to this scenario.
 5. independent feature/spec files with no ordering dependency.
 
 Parallelization is spec-file based. Tests must create their own state and must not depend on another scenario running first.
+
+## Database, dependency API, Jira, and CI templates
+
+IBM Db2 (`ibm_db`) and Snowflake (`snowflake-sdk`) execute through private Cypress Node tasks. Configure the environment-specific placeholders from `.env.example`, then use parameterized calls:
+
+```javascript
+cy.db2Query('SELECT STATUS FROM ACCOUNTS WHERE ACCOUNT_ID = ?', [accountId]);
+cy.snowflakeQuery('SELECT EVENT_TYPE FROM AUDIT_EVENTS WHERE EVENT_ID = ?', [eventId]);
+```
+
+Production database mutations are blocked by default, and SQL batches are rejected in every environment. Run `npm run test:unit` to verify the adapters with mock databases—no live credentials are required. Full setup and safety rules are in [the database guide](docs/database-integrations.md).
+
+Use `ThirdPartyApiMonitor.verify()` for dependent-application API permissions and contracts. A mismatch attaches a redacted comparison containing the call, expected and actual status/fields, duration, and available correlation IDs before failing the scenario.
+
+Jira Cloud updates are disabled unless `JIRA_ENABLED=true`. The Node script comments with the test result/build link and resolves the configured passing or failing workflow transition. GitLab and Docker files under `ci` are reviewable templates, not active pipelines. See [the onboarding guide](docs/onboarding-guide.md#jira-cloud-and-ci-handoff).
 
 ## Adding a new test area
 

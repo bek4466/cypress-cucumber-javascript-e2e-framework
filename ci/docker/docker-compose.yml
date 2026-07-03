@@ -1,0 +1,17 @@
+# Local/CI template. Secrets are read from the caller's ignored .env file and
+# are never baked into the image.
+services:
+  e2e:
+    build:
+      context: ../..
+      dockerfile: ci/docker/Dockerfile
+      args:
+        NODE_VERSION: '24.18.0'
+        CYPRESS_VERSION: '15.17.0'
+    env_file:
+      - ../../.env
+    volumes:
+      - ../../reports:/e2e/reports
+      - ../../cypress/screenshots:/e2e/cypress/screenshots
+      - ../../cypress/videos:/e2e/cypress/videos
+    command: npm run test:all

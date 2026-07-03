@@ -1,0 +1,11 @@
+{
+  "_notes": "Template public configuration for production-safe checks. Database writes remain blocked by default and credentials stay in secret storage.",
+  "baseUrl": "https://the-internet.herokuapp.com",
+  "apiBaseUrl": "",
+  "domains": {
+    "theInternet": "https://the-internet.herokuapp.com",
+    "exampleCom": "https://example.com",
+    "exampleOrg": "https://example.org",
+    "exampleNet": "https://example.net"
+  }
+}
